@@ -31,7 +31,6 @@ public class VuforiaTest extends LinearOpMode{
      * localization engine.
      */
     VuforiaLocalizer vuforia;
-    //test
 
     @Override public void runOpMode() {
 
