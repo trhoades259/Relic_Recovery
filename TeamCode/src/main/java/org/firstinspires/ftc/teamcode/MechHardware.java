@@ -14,10 +14,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 public class MechHardware {
 
-    public DcMotor frontLeftDrive;
-    public DcMotor backLeftDrive;
-    public DcMotor frontRightDrive;
-    public DcMotor backRightDrive;
+    DcMotor frontLeftDrive;
+    DcMotor backLeftDrive;
+    DcMotor frontRightDrive;
+    DcMotor backRightDrive;
 
     ColorSensor Color;
     DistanceSensor Distance;
@@ -25,9 +25,6 @@ public class MechHardware {
     HardwareMap hwm;
 
     VuforiaLocalizer vuforia;
-
-
-
 
     MechHardware() {};
 
@@ -64,7 +61,32 @@ public class MechHardware {
 
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-
+    }
+    public void driveForward(double power) {
+        frontLeftDrive.setPower(power);
+        backLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        backRightDrive.setPower(power);
+    }
+    public void driveBackward(double power) {
+        driveForward(-power);
+    }
+    public void turnLeft(double power) {
+        frontLeftDrive.setPower(-power);
+        backLeftDrive.setPower(-power);
+        frontRightDrive.setPower(power);
+        backRightDrive.setPower(power);
+    }
+    public void turnRight(double power) {
+        turnLeft(-power);
+    }
+    public void strafeLeft(double power) {
+        frontLeftDrive.setPower(power);
+        backLeftDrive.setPower(-power);
+        frontRightDrive.setPower(-power);
+        backRightDrive.setPower(power);
+    }
+    public void strafeRight(double power) {
+        strafeLeft(-power);
     }
 }
