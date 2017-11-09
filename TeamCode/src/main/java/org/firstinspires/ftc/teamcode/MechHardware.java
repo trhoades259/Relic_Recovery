@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
 /**
  * Created by User on 10/17/2017.
  */
@@ -20,6 +23,11 @@ public class MechHardware {
     DistanceSensor Distance;
 
     HardwareMap hwm;
+
+    VuforiaLocalizer vuforia;
+
+
+
 
     MechHardware() {};
 
@@ -48,5 +56,15 @@ public class MechHardware {
 
         Color = hwm.get(ColorSensor.class, "revColor");
         Distance = hwm.get(DistanceSensor.class, "revColor");
+
+        int cameraMonitorViewId = hwm.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwm.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "AXdOcVz/////AAAAGSXgHubMS0r6roxUdjf9DWKA7GTut2LGpmgusuOdBmgcr9vnOOQAc9l3bXYlX+3nFwmePFZh1Brz4BsbF1h6zhAXHx5VvmWWpVeNoCLbxDnyaPBtmZ3k2ZgHLFLTjS2ST/arbrmCSAVUTX9xOgenNw+pcCuZYKQxr34uWWppyhJPPIPP152Gud24gReY/Sg8hM20JYH49E1nRLpIjYA1FTxWy135xOu5SCns1p48AgTLxyy51v0WRBALpIWAW/Qe30gGHb9W3swgPlBj1EVMFgLdCXgp5NAlKNvID6T6G8NaN2dYY64Cv601JDKkcGHM1KNU5N4vn6spJkE0tZI2NqfiSaBKT59+nPsbv5AGQ0IA";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+
     }
 }

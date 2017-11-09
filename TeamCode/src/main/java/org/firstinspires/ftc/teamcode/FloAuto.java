@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
@@ -17,32 +14,44 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous
 
 public class FloAuto extends LinearOpMode{
-    public static final String TAG = "Vuforia VuMark Sample";
 
-    OpenGLMatrix lastLocation = null;
 
-    VuforiaLocalizer vuforia;
+    private MechHardware robot = new MechHardware();
 
-    MechHardware robot = new MechHardware();
+    private String color = "Red";
+    private String side = "Right";
+
 
     @Override public void runOpMode() {
 
         robot.init(hardwareMap);
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        parameters.vuforiaLicenseKey = "AXdOcVz/////AAAAGSXgHubMS0r6roxUdjf9DWKA7GTut2LGpmgusuOdBmgcr9vnOOQAc9l3bXYlX+3nFwmePFZh1Brz4BsbF1h6zhAXHx5VvmWWpVeNoCLbxDnyaPBtmZ3k2ZgHLFLTjS2ST/arbrmCSAVUTX9xOgenNw+pcCuZYKQxr34uWWppyhJPPIPP152Gud24gReY/Sg8hM20JYH49E1nRLpIjYA1FTxWy135xOu5SCns1p48AgTLxyy51v0WRBALpIWAW/Qe30gGHb9W3swgPlBj1EVMFgLdCXgp5NAlKNvID6T6G8NaN2dYY64Cv601JDKkcGHM1KNU5N4vn6spJkE0tZI2NqfiSaBKT59+nPsbv5AGQ0IA";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackables relicTrackables = this.robot.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate");
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
+
+        while (!opModeIsActive()) {
+            if(gamepad1.x || gamepad2.x) {
+                color = "Blue";
+            }
+            if (gamepad1.b || gamepad2.b){
+                color = "Red";
+            }
+            telemetry.addData("Color {X (Blue), B (Red)}", color);
+
+            if(gamepad1.a || gamepad2.a) {
+                side = "Left";
+            }
+            if (gamepad1.y || gamepad2.y){
+                side = "Right";
+            }
+            telemetry.addData("Side {A (Left), Y (Right)}", side);
+
+            telemetry.update();
+        }
         waitForStart();
 
         relicTrackables.activate();
@@ -55,7 +64,9 @@ public class FloAuto extends LinearOpMode{
                 if (vuMark == RelicRecoveryVuMark.LEFT) coulum--;
                 else if (vuMark == RelicRecoveryVuMark.LEFT) coulum++;
             }
-            //deppendant on allience color, coulum=3-coulum;
+            if(side.equals("Right")) {
+                coulum=3-coulum;
+            }
             robot.frontLeftDrive.setPower(1);
             for (int n=0; n < coulum; n++) {
                 while(robot.Distance.getDistance(DistanceUnit.CM) > 6);
