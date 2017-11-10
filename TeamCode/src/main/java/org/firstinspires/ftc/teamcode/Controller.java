@@ -164,8 +164,7 @@ public class Controller {
         if(off.contains("Lead")) useLead=false;
         if(off.contains("Lag")) useLag=false;
     }
-    public static void getAngle(double x, double y) {
-        double angle = Math.atan(-y/x);
-        if()
+    public static double getAngle(double x, double y) {
+        return Math.atan2(-y,x);
     }
 }
