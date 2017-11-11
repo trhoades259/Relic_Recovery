@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -18,6 +19,8 @@ public class MechHardware {
     DcMotor backLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
+
+    Servo jewelArm;
 
     ColorSensor Color;
     DistanceSensor Distance;
@@ -50,6 +53,10 @@ public class MechHardware {
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        jewelArm = hwm.get(Servo.class, "jewel_arm");
+
+        jewelArm.setPosition(0.0);
 
         Color = hwm.get(ColorSensor.class, "revColor");
         Distance = hwm.get(DistanceSensor.class, "revColor");
