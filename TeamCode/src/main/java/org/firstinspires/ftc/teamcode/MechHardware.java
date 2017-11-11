@@ -19,6 +19,7 @@ public class MechHardware {
     DcMotor backLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
+    DcMotor conveyor;
 
     Servo jewelArm;
 
@@ -38,21 +39,25 @@ public class MechHardware {
         backLeftDrive = hwm.get(DcMotor.class, "back_left_drive");
         frontRightDrive = hwm.get(DcMotor.class, "front_right_drive");
         backRightDrive = hwm.get(DcMotor.class, "back_right_drive");
+        conveyor = hwm.get(DcMotor.class, "conveyor");
 
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        conveyor.setDirection(DcMotor.Direction.FORWARD);
 
         frontLeftDrive.setPower(0);
         backLeftDrive.setPower(0);
         frontRightDrive.setPower(0);
         backRightDrive.setPower(0);
+        conveyor.setPower(0);
 
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        conveyor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         jewelArm = hwm.get(Servo.class, "jewel_arm");
 

@@ -66,12 +66,12 @@ public class FloAuto extends LinearOpMode{
             double compare = runtime.time();
             while(robot.Color.red()<15 || robot.Color.blue()<15 || (runtime.time()-compare)<2) ;
             if((robot.Color.red()>15 && color.equals("Red"))||(robot.Color.blue()>15 && color.equals("Blue"))) {
-                //robot.turnRight();
-                //robot.turnLeft();
+                robot.turnRight();
+                robot.turnLeft();
             }
             else {
-              //  robot.turnLeft();
-                //robot.turnRight();
+                robot.turnLeft();
+                robot.turnRight();
             }
 
             //robot.turnLeft();
@@ -88,16 +88,18 @@ public class FloAuto extends LinearOpMode{
             if(side.equals("Right")) {
                 coulum=3-coulum;
             }
-          //  robot.turnRight();
-            //if(side.equals("Right")) robot.strafeLeft();
-            //else robot.strafeRight();
+            robot.turnRight();
+            if(side.equals("Right")) robot.strafeLeft();
+            else robot.strafeRight();
             for (int n=0; n < coulum; n++) {
                 while(robot.Distance.getDistance(DistanceUnit.CM) > 6);
                 if((n-1)!=coulum) while(robot.Distance.getDistance(DistanceUnit.CM) < 6);
             }
             robot.stop();
 
-
+            robot.conveyor.setPower(1.0);
+            sleep(3000);
+            robot.conveyor.setPower(0);
         }
     }
 }
