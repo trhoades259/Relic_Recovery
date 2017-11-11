@@ -78,6 +78,9 @@ public class MechHardware {
     public void driveBackward(double power) {
         driveForward(-power);
     }
+    public void stop() {
+        driveForward(0.0);
+    }
     public void turnLeft(double power) {
         frontLeftDrive.setPower(-power);
         backLeftDrive.setPower(-power);
