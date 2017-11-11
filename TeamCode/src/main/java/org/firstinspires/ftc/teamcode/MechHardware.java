@@ -89,4 +89,31 @@ public class MechHardware {
     public void strafeRight(double power) {
         strafeLeft(-power);
     }
+    public double getAngle(double x, double y){
+        return Math.atan2(-y,x);
+    }
+    public double getMagnitude(double x, double y){
+        double mag = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        if (mag>1) mag=1.0;
+        return mag;
+    }
+    public double getVectorRatio(double x, double y){
+        return ((1-x/y)/(1+x/y));
+    }
+    public double leftMagnitude(double x, double y){
+        double ratio = getVectorRatio(x,y);
+        if (ratio > 1.0) return(1.0/ratio);
+        else return 1.0;
+    }
+    public double rightMagnitude(double x, double y){
+        double ratio = getVectorRatio(x,y);
+        if (ratio > 1.0) return 1.0;
+        else return (1.0/ratio);
+    }
+    public double leftPower(double x, double y){
+        return (getMagnitude(x,y)*leftMagnitude(x,y));
+    }
+    public double rightPower(double x, double y){
+        return (getMagnitude(x,y)*rightMagnitude(x,y));
+    }
 }
