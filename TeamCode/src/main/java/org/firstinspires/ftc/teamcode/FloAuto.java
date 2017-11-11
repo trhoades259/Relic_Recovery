@@ -73,6 +73,8 @@ public class FloAuto extends LinearOpMode{
                 robot.turnRight();
             }
 
+
+
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             int coulum = 2;
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {

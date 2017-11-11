@@ -164,7 +164,32 @@ public class Controller {
         if(off.contains("Lead")) useLead=false;
         if(off.contains("Lag")) useLag=false;
     }
-    public static double getAngle(double x, double y) {
+    public static double getAngle(double x, double y){
         return Math.atan2(-y,x);
+    }
+    public static double getMagnitude(double x, double y){
+        double mag = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        if (mag>1) mag=1.0;
+        return mag;
+    }
+    public static double getVectorRatio(double x, double y){
+        return ((1-x/y)/(1+x/y));
+    }
+    public static double leftMagnitude(double x, double y){
+        if((1+x/y)==0) return 0.0;
+        double ratio = getVectorRatio(x,y);
+        if (ratio > 1.0) return(1.0/ratio);
+        return 1.0;
+    }
+    public static double rightMagnitude(double x, double y){
+        double ratio = getVectorRatio(x,y);
+        if (ratio > 1.0) return 1.0;
+        return (1.0/ratio);
+    }
+    public static double leftPower(double x, double y){
+        return (getMagnitude(x,y)*leftMagnitude(x,y));
+    }
+    public static double rightPower(double x, double y){
+        return (getMagnitude(x,y)*rightMagnitude(x,y));
     }
 }
