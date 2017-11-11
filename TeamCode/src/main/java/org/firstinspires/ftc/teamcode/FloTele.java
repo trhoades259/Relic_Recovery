@@ -36,6 +36,7 @@ public class FloTele extends OpMode {
         telemetry.addData("Green", robot.Color.green());
         telemetry.addData("Blue ", robot.Color.blue());
         telemetry.addData("Distance (cm)", String.format(Locale.US, "%.02f", robot.Distance.getDistance(DistanceUnit.CM)));
+        
         /*  FORZA STYLE
         if (gamepad1.right_trigger>0.1&&(gamepad1.right_stick_x>0.1||gamepad1.right_stick_x<-0.1)){
             if (gamepad1.right_stick_x>0.1){
