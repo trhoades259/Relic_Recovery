@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -17,6 +18,8 @@ public class FloAuto extends LinearOpMode{
 
 
     private MechHardware robot = new MechHardware();
+
+    ElapsedTime runtime = new ElapsedTime();
 
     private String color = "Red";
     private String side = "Right";
@@ -58,7 +61,17 @@ public class FloAuto extends LinearOpMode{
 
         while (opModeIsActive()) {
 
-
+            robot.jewelArm.setPosition(0.5);
+            double compare = runtime.time();
+            while(robot.Color.red()<15 || robot.Color.blue()<15 || (runtime.time()-compare)<2) ;
+            if((robot.Color.red()>15 && color.equals("Red"))||(robot.Color.blue()>15 && color.equals("Blue"))) {
+                robot.turnRight();
+                robot.turnLeft();
+            }
+            else {
+                robot.turnLeft();
+                robot.turnRight();
+            }
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             int coulum = 2;
