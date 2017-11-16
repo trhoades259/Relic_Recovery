@@ -13,6 +13,7 @@ public class Toggle {
     Servo servo;
     double init, change;
     int cycle = 3;
+    private boolean mode = false, hold=false;
 
     Toggle() {}
     Toggle(Object obj) {
@@ -63,5 +64,14 @@ public class Toggle {
         if(cycle==0){
             servo.setPosition(init);
         }
+    }
+    public double toggle(boolean button) {
+        if(button) hold=!hold;
+        if(hold&&!button) {
+            hold=!hold;
+            mode=!mode;
+        }
+        if(mode) return change;
+        else return init;
     }
 }
