@@ -80,9 +80,6 @@ public class MechHardware {
         frontRightDrive.setPower(power);
         backRightDrive.setPower(power);
     }
-    public void driveBackward(double power) {
-        driveForward(-power);
-    }
     public void stop() {
         driveForward(0.0);
     }
@@ -103,5 +100,13 @@ public class MechHardware {
     }
     public void strafeRight(double power) {
         strafeLeft(-power);
+    }
+    public void leftVector(double power) {
+        frontLeftDrive.setPower(power);
+        backRightDrive.setPower(power);
+    }
+    public void rightVector(double power) {
+        backLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
     }
 }

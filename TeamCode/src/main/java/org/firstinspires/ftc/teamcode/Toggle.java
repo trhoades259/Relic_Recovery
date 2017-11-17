@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Toggle {
 
-    DcMotor motor;
-    Servo servo;
-    double init, change;
-    int cycle = 3;
+    private DcMotor motor;
+    private Servo servo;
+    private double init, change;
+    private int cycle = 3;
     private boolean mode = false, hold=false;
 
     Toggle() {}

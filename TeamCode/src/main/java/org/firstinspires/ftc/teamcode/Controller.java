@@ -168,11 +168,11 @@ public class Controller {
         return Math.atan2(-y,x);
     }
     public static double getMagnitude(double x, double y){
-        double mag = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        double mag = Math.sqrt(x*x + y*y);
         if (mag>1) mag=1.0;
         return mag;
     }
-    public static double getVectorRatio(double x, double y){
+    /*public static double getVectorRatio(double x, double y){
         return ((1-x/y)/(1+x/y));
     }
     public static double leftMagnitude(double x, double y){
@@ -191,5 +191,11 @@ public class Controller {
     }
     public static double rightPower(double x, double y){
         return (getMagnitude(x,y)*rightMagnitude(x,y));
+    }*/
+    public static double angleDriveLeft(double x, double y) {
+        return Math.sin(getAngle(x,y)-Math.PI/4)*getMagnitude(x,y);
+    }
+    public static double angleDriveRight(double x, double y) {
+        return Math.cos(getAngle(x,y)-Math.PI/4)*getMagnitude(x,y);
     }
 }

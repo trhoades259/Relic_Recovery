@@ -1,12 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import java.util.Locale;
 
 /**
  * Created by dave on 11/11/17.
@@ -30,6 +25,8 @@ public class FloTele extends OpMode {
 
     @Override
     public void loop() {
+        robot.leftVector(Controller.angleDriveLeft(gamepad1.left_stick_x,gamepad1.left_stick_y));
+        robot.rightVector(Controller.angleDriveRight(gamepad1.left_stick_x,gamepad1.left_stick_y));
 
     }
 }
