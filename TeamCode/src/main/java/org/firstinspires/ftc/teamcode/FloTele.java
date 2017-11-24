@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 @TeleOp
 public class FloTele extends OpMode {
-    MechHardware robot = new MechHardware();
+    Hardware robot = new Hardware();
 
     @Override
     public void init() {
@@ -25,8 +25,7 @@ public class FloTele extends OpMode {
 
     @Override
     public void loop() {
-        robot.leftVector(Controller.angleDriveLeft(gamepad1.left_stick_x,gamepad1.left_stick_y));
-        robot.rightVector(Controller.angleDriveRight(gamepad1.left_stick_x,gamepad1.left_stick_y));
+        robot.chasis.driveAngle(gamepad1.left_stick_x,gamepad1.left_stick_y);
 
     }
 }

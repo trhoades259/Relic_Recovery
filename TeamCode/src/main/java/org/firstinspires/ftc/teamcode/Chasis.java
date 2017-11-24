@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -13,24 +11,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
  * Created by User on 10/17/2017.
  */
 
-public class MechHardware {
+public class Chasis {
 
     DcMotor frontLeftDrive;
     DcMotor backLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
-    DcMotor conveyor;
 
-    Servo jewelArm;
-
-    ColorSensor Color;
     DistanceSensor Distance;
 
     HardwareMap hwm;
 
     VuforiaLocalizer vuforia;
 
-    MechHardware() {};
+    Chasis() {};
 
     public void init(HardwareMap inhwm) {
         hwm = inhwm;
@@ -39,32 +33,23 @@ public class MechHardware {
         backLeftDrive = hwm.get(DcMotor.class, "back_left_drive");
         frontRightDrive = hwm.get(DcMotor.class, "front_right_drive");
         backRightDrive = hwm.get(DcMotor.class, "back_right_drive");
-        conveyor = hwm.get(DcMotor.class, "conveyor");
 
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        conveyor.setDirection(DcMotor.Direction.FORWARD);
 
         frontLeftDrive.setPower(0);
         backLeftDrive.setPower(0);
         frontRightDrive.setPower(0);
         backRightDrive.setPower(0);
-        conveyor.setPower(0);
 
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        conveyor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        jewelArm = hwm.get(Servo.class, "jewel_arm");
-
-        jewelArm.setPosition(0.0);
-
-        Color = hwm.get(ColorSensor.class, "revColor");
-        Distance = hwm.get(DistanceSensor.class, "revColor");
+        Distance = hwm.get(DistanceSensor.class, "distance");
 
         int cameraMonitorViewId = hwm.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwm.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);

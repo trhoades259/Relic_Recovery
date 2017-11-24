@@ -71,5 +71,6 @@ public class FtcOpModeRegister implements OpModeRegister {
         //manager.register("AutoSensor", AutoSensor.class);
         manager.register("VuforiaTest", VuforiaTest.class);
         manager.register("grabberTeleTest", grabberTeleTest.class);
+        manager.register("LiftGlift_Tele", LiftGlift_Tele.class);
     }
 }

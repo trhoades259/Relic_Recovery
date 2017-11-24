@@ -38,7 +38,7 @@ public class grabberTeleTest extends OpMode {
             camCycle = 2 ;
         }
         if(camCycle==2){
-            grabber.setPosition(0.1);
+            grabber.setPosition(0.3);
         }
         if (gamepad2.a&&camCycle==2){
             camCycle = 3 ;

@@ -105,14 +105,14 @@ public class Tele1 extends OpMode {
             backRightDrive.setPower(-gamepad1.left_trigger);
         }
         //move right
-        else if (gamepad1.dpad_right) {
+        else if (gamepad1.dpad_right==true) {
             frontLeftDrive.setPower(1.0);
             backLeftDrive.setPower(-1.0);
             frontRightDrive.setPower(-1.0);
             backRightDrive.setPower(1.0);
         }
         //move left
-        else if (gamepad1.dpad_left) {
+        else if (gamepad1.dpad_left==true) {
             frontLeftDrive.setPower(-1.0);
             backLeftDrive.setPower(1.0);
             frontRightDrive.setPower(1.0);

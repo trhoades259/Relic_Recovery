@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -197,5 +198,28 @@ public class Controller {
     }
     public static double angleDriveRight(double x, double y) {
         return Math.cos(getAngle(x,y)-Math.PI/4)*getMagnitude(x,y);
+    }
+    public static void toPosition(DcMotor[] motors, int[] positions, double[] speeds) {
+        for(int n=0; n<motors.length; n++) {
+            motors[n].setTargetPosition(positions[n]);
+            motors[n].setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motors[n].setPower(speeds[n]);
+        }
+        while(isBusy(motors));
+        for(DcMotor motor : motors) {
+            motor.setPower(0.0);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+    }
+    public static void toPosition(DcMotor motor, int position, double speed) {
+        DcMotor[] motors = {motor};
+        int[] positions = {position};
+        double[] speeds = {speed};
+        toPosition(motors,positions,speeds);
+    }
+    private static boolean isBusy(DcMotor[] motors) {
+        for(DcMotor motor : motors) if(motor.isBusy()) return true;
+        return false;
     }
 }
