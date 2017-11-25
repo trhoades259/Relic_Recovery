@@ -18,6 +18,8 @@ public class Chasis {
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
 
+    double powerMatrix[][] = {{0,0},{0,0}};
+
     DistanceSensor Distance;
 
     HardwareMap hwm;
@@ -95,7 +97,27 @@ public class Chasis {
         frontRightDrive.setPower(power);
     }
     public void driveAngle(double x, double y) {
-        leftVector(Controller.angleDriveLeft(x,y));
-        rightVector(Controller.angleDriveRight(x,y));
+        for(int n=0; n<2; n++) powerMatrix[n][n] += Controller.angleDriveLeft(x,y);
+        for(int n=0; n<2; n++) powerMatrix[1-n][n] += Controller.angleDriveRight(x,y);
+    }
+    public double getMax() {
+        double max=0;
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(powerMatrix[n][i]>max) max=powerMatrix[n][i];
+        return max;
+    }
+    public void turn(double mag) {
+        mag/=2;
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=(1-mag);
+        double[][] turnMatrix = {{mag,-mag},{mag,-mag}};
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]+=turnMatrix[n][i];
+    }
+    public void reset() {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]=0.0;
+    }
+    public void setPower() {
+        frontLeftDrive.setPower(powerMatrix[0][0]);
+        backLeftDrive.setPower(powerMatrix[1][0]);
+        frontRightDrive.setPower(powerMatrix[0][1]);
+        backRightDrive.setPower(powerMatrix[1][1]);
     }
 }

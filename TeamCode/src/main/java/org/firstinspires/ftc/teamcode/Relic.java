@@ -15,8 +15,8 @@ public class Relic {
 
     public Servo grabber;
 
-    private static final double OPEN = 1.0;
-    private static final double CLOSE = 0.0;
+    static final double OPEN = 1.0;
+    static final double CLOSE = 0.0;
 
     private HardwareMap hwm;
 

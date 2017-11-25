@@ -14,7 +14,7 @@ public class Conveyor {
 
     private HardwareMap hwm;
 
-    static final int HIGHPOSITION = 1000;
+    public static final int HIGHPOSITION = 1000;
 
     Conveyor() {}
 
@@ -41,10 +41,10 @@ public class Conveyor {
     public void stop() {
         belt.setPower(0.0);
     }
-    public void raise() {
+    public void up() {
         Controller.toPosition(lift,HIGHPOSITION,1.0);
     }
-    public void lower() {
+    public void down() {
         Controller.toPosition(lift,0,1.0);
     }
 }

@@ -65,13 +65,17 @@ public class Toggle {
             servo.setPosition(init);
         }
     }
-    public double toggle(boolean button) {
+    public double toggleValue(boolean button) {
+        if(toggle(button)) return change;
+        return init;
+    }
+    public boolean toggle(boolean button) {
         if(button) hold=!hold;
         if(hold&&!button) {
             hold=!hold;
             mode=!mode;
         }
-        if(mode) return change;
-        else return init;
+        if(mode) return true;
+        else return false;
     }
 }
