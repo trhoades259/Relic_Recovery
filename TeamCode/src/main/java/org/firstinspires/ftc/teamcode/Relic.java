@@ -15,8 +15,9 @@ public class Relic {
 
     public Servo grabber;
 
-    static final double OPEN = 1.0;
-    static final double CLOSE = 0.0;
+    static final double INIT = 0.55;
+    static final double OPEN = 0.45;
+    static final double CLOSE = 0.75;
 
     private HardwareMap hwm;
 
@@ -34,7 +35,7 @@ public class Relic {
 
         vertLift.setPower(0.0);
         horzLift.setPower(0.0);
-        grabber.setPosition(CLOSE);
+        grabber.setPosition(INIT);
 
         vertLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         horzLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
