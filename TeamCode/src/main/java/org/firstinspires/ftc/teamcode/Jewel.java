@@ -10,12 +10,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Jewel {
 
-    public Servo arm;
+    Servo arm;
 
-    public ColorSensor color;
+    ColorSensor color;
 
-    private static final double UP = 1.0;
-    private static final double DOWN = 0.0;
+    static final double UP = 1.0;
+    static final double DOWN = 0.0;
 
     private HardwareMap hwm;
 
@@ -25,6 +25,7 @@ public class Jewel {
         hwm = inhwm;
 
         arm = hwm.get(Servo.class,"arm");
+        color = hwm.get(ColorSensor.class, "color");
 
         arm.setPosition(UP);
     }

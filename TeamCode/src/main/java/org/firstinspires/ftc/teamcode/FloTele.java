@@ -13,7 +13,6 @@ public class FloTele extends OpMode {
 
     Conveyor conveyor = new Conveyor();
     Relic relic = new Relic();
-    Jewel jewel = new Jewel();
     Chasis chasis = new Chasis();
 
     Toggle drive = new Toggle();
@@ -32,7 +31,6 @@ public class FloTele extends OpMode {
     public void init() {
         conveyor.init(hardwareMap);
         relic.init(hardwareMap);
-        jewel.init(hardwareMap);
         chasis.init(hardwareMap);
 
         beltSpeed.setEnds(1.0,0.5);
