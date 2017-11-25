@@ -173,26 +173,6 @@ public class Controller {
         if (mag>1) mag=1.0;
         return mag;
     }
-    /*public static double getVectorRatio(double x, double y){
-        return ((1-x/y)/(1+x/y));
-    }
-    public static double leftMagnitude(double x, double y){
-        if((1+x/y)==0) return 0.0;
-        double ratio = getVectorRatio(x,y);
-        if (ratio > 1.0) return(1.0/ratio);
-        return 1.0;
-    }
-    public static double rightMagnitude(double x, double y){
-        double ratio = getVectorRatio(x,y);
-        if (ratio > 1.0) return 1.0;
-        return (1.0/ratio);
-    }
-    public static double leftPower(double x, double y){
-        return (getMagnitude(x,y)*leftMagnitude(x,y));
-    }
-    public static double rightPower(double x, double y){
-        return (getMagnitude(x,y)*rightMagnitude(x,y));
-    }*/
     public static double angleDriveLeft(double x, double y) {
         return Math.sin(getAngle(x,y)-Math.PI/4)*getMagnitude(x,y);
     }
