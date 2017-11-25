@@ -115,9 +115,15 @@ public class Chasis {
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]=0.0;
     }
     public void setPower() {
+        capPower();
         frontLeftDrive.setPower(powerMatrix[0][0]);
         backLeftDrive.setPower(powerMatrix[1][0]);
         frontRightDrive.setPower(powerMatrix[0][1]);
         backRightDrive.setPower(powerMatrix[1][1]);
+    }
+    public void capPower() {
+        double[][] capMatrix = {{1.0,1.0},{1.0,1.0}};
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(powerMatrix[n][i]<0) capMatrix[n][i]=(-1.0);
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(Math.abs(powerMatrix[n][i])>1) powerMatrix[n][i]=capMatrix[n][i];
     }
 }
