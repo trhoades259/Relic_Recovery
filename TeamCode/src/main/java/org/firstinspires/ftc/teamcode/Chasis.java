@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
+import static org.firstinspires.ftc.teamcode.Controller.getMagnitude;
+
 /**
  * Created by User on 10/17/2017.
  */
@@ -18,7 +20,8 @@ public class Chasis {
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
 
-    double powerMatrix[][] = {{0,0},{0,0}};
+    double[][] powerMatrix = {{0,0},{0,0}};
+    DcMotor[][] drivetrain = {{frontLeftDrive,frontRightDrive},{backLeftDrive,backRightDrive}};
 
     DistanceSensor Distance;
 
@@ -99,31 +102,37 @@ public class Chasis {
     public void driveAngle(double x, double y) {
         for(int n=0; n<2; n++) powerMatrix[n][n] += Controller.angleDriveLeft(x,y);
         for(int n=0; n<2; n++) powerMatrix[1-n][n] += Controller.angleDriveRight(x,y);
+        double mult = getMagnitude(x,y)/getMax();
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=mult;
     }
     public double getMax() {
         double max=0;
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(powerMatrix[n][i]>max) max=powerMatrix[n][i];
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(Math.abs(powerMatrix[n][i])>max) max=Math.abs(powerMatrix[n][i]);
         return max;
     }
-    public void turn(double mag) {
-        mag/=2;
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=(1-mag);
-        double[][] turnMatrix = {{mag,-mag},{mag,-mag}};
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]+=turnMatrix[n][i];
+    public void turn(double power) {
+        power/=2;
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=(1-power);
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[i][n]+=power-(2*power*n);
     }
     public void reset() {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]=0.0;
+        setPower(0.0);
     }
     public void setPower() {
         capPower();
-        frontLeftDrive.setPower(powerMatrix[0][0]);
-        backLeftDrive.setPower(powerMatrix[1][0]);
-        frontRightDrive.setPower(powerMatrix[0][1]);
-        backRightDrive.setPower(powerMatrix[1][1]);
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(powerMatrix[n][i]);
+    }
+    public void setPower(double power) {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]=power;
+        setPower();
     }
     public void capPower() {
         double[][] capMatrix = {{1.0,1.0},{1.0,1.0}};
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(powerMatrix[n][i]<0) capMatrix[n][i]=(-1.0);
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(Math.abs(powerMatrix[n][i])>1) powerMatrix[n][i]=capMatrix[n][i];
+    }
+    public void setRotation(double power) {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[i][n]=power-(2*power*n);
+        setPower();
     }
 }

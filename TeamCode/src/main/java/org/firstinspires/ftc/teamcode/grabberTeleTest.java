@@ -18,7 +18,7 @@ public class grabberTeleTest extends OpMode {
     public void init() {
         grabber= hardwareMap.get(Servo.class, "grabber");
 
-        grabber.setPosition(0.0);
+        grabber.setPosition(0.55);
 
     }
     @Override
@@ -38,7 +38,7 @@ public class grabberTeleTest extends OpMode {
             camCycle = 2 ;
         }
         if(camCycle==2){
-            grabber.setPosition(0.3);
+            grabber.setPosition(0.7);
         }
         if (gamepad2.a&&camCycle==2){
             camCycle = 3 ;
@@ -46,7 +46,7 @@ public class grabberTeleTest extends OpMode {
             camCycle = 0;
         }
         if(camCycle==0){
-            grabber.setPosition(0.0);
+            grabber.setPosition(0.45);
         }
     }
     @Override
