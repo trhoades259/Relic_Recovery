@@ -18,7 +18,6 @@ public class Controller {
     private boolean useP = true, useI = true, useD = true, useLead = false, useLag = false;
     private double limit;
     private boolean limiter;
-    private boolean DI = false;
     private  boolean antiWind = false;
 
     private ElapsedTime runTime = new ElapsedTime();
@@ -38,9 +37,6 @@ public class Controller {
     }
     public void setKi(double i) {
         Ki = i;
-    }
-    public void dynamicI(boolean d) {
-        DI = d;
     }
     public void antiWind(boolean a) {
         antiWind = a;
@@ -102,7 +98,6 @@ public class Controller {
         double iError=error, sum=error*time;
         if(antiWind) iError-=antiWind(sum);
         sum=iError*time;
-        if(DI) sum*=D;
         I+=sum;
     }
     public double antiWind(double in) {
@@ -200,6 +195,10 @@ public class Controller {
     }
     private static boolean isBusy(DcMotor[] motors) {
         for(DcMotor motor : motors) if(motor.isBusy()) return true;
+        return false;
+    }
+    public static boolean timer(double startTime, double currentTime, double timeLimit) {
+        if((startTime+timeLimit)<currentTime) return true;
         return false;
     }
 }

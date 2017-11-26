@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import static org.firstinspires.ftc.teamcode.Controller.getMagnitude;
@@ -28,6 +33,10 @@ public class Chasis {
     HardwareMap hwm;
 
     VuforiaLocalizer vuforia;
+
+    BNO055IMU imu;
+
+    Orientation angles;
 
     Chasis() {};
 
@@ -63,6 +72,12 @@ public class Chasis {
 
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        BNO055IMU.Parameters parametersIMU = new BNO055IMU.Parameters();
+        parametersIMU.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu = hwm.get(BNO055IMU.class, "imu");
+        imu.initialize(parametersIMU);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
     }
     public void driveForward(double power) {
         frontLeftDrive.setPower(power);
@@ -134,5 +149,27 @@ public class Chasis {
     public void setRotation(double power) {
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[i][n]=power-(2*power*n);
         setPower();
+    }
+    public double getYaw() {
+        return (double) imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
+    }
+    public double getRoll() {
+        return -((double) imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).secondAngle);
+    }
+    public double getPitch() {
+        return (double) imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).thirdAngle;
+    }
+    public double targetYaw() {
+        return Math.atan2(Math.cos(getPitch()),Math.cos(getRoll()));
+    }
+    public double pitchError() {
+        return Math.atan2(Math.sin(getRoll())+Math.sin(getPitch()),getMagnitude(Math.cos(getPitch()),Math.cos(getRoll())));
+    }
+    public void level() {
+        Controller level = new Controller("PID");
+        level.setKp(0.25);
+        level.setKi(0.25);
+        level.setKd(0.25);
+
     }
 }

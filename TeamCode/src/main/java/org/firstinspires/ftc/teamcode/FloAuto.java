@@ -65,9 +65,21 @@ public class FloAuto extends LinearOpMode{
 
         while (opModeIsActive()) {
 
+            jewel.down();
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            int coulum = 2;
+            double startTime=runtime.time();
+            while(Controller.timer(startTime,runtime.time(),3.0)) {
+                if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                    if (vuMark == RelicRecoveryVuMark.LEFT) coulum--;
+                    else if (vuMark == RelicRecoveryVuMark.RIGHT) coulum++;
+                    break;
+                }
+            }
+            if(side.equals("Right")) coulum=3-coulum;
 
-            double compare = runtime.time();
-            while(jewel.color.red()<BREAKPOINT || jewel.color.blue()<BREAKPOINT || (runtime.time()-compare)<2) ;
+            startTime = runtime.time();
+            while(jewel.color.red()<BREAKPOINT && jewel.color.blue()<BREAKPOINT && Controller.timer(startTime,runtime.time(),1.0)) ;
             if((jewel.color.red()>BREAKPOINT && color.equals("Red"))||(jewel.color.blue()>BREAKPOINT && color.equals("Blue"))) {
                 //robot.turnRight();
                 //robot.turnLeft();
@@ -75,21 +87,6 @@ public class FloAuto extends LinearOpMode{
             else {
                 //robot.turnLeft();
               //  robot.turnRight();
-            }
-
-            //robot.turnLeft();
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            int coulum = 2;
-            compare=runtime.time();
-            while((runtime.time()-compare)<3) {
-                if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                    if (vuMark == RelicRecoveryVuMark.LEFT) coulum--;
-                    else if (vuMark == RelicRecoveryVuMark.RIGHT) coulum++;
-                    break;
-                }
-            }
-            if(side.equals("Right")) {
-                coulum=3-coulum;
             }
             //robot.turnRight();
             //if(side.equals("Right")) robot.strafeLeft();
