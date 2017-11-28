@@ -120,6 +120,12 @@ public class Chasis {
         double mult = getMagnitude(x,y)/getMax();
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=mult;
     }
+    public void setAngle(double angle, double mag) {
+        for(int n=0; n<2; n++) powerMatrix[n][n] += Math.sin(Math.toRadians(angle)+Math.PI/4);
+        for(int n=0; n<2; n++) powerMatrix[1-n][n] +=  Math.cos(Math.toRadians(angle)+Math.PI/4);
+        double mult = mag/getMax();
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=mult;
+    }
     public double getMax() {
         double max=0;
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(Math.abs(powerMatrix[n][i])>max) max=Math.abs(powerMatrix[n][i]);
@@ -170,6 +176,12 @@ public class Chasis {
         level.setKp(0.25);
         level.setKi(0.25);
         level.setKd(0.25);
-
+        level.setTarget(0.0);
+        level.setLimit(1.0);
+        double error = 10.0;
+        while(Math.abs(error)>5.0) {
+            level.update(pitchError());
+            setAngle(targetYaw(),level.getOut());
+        }
     }
 }

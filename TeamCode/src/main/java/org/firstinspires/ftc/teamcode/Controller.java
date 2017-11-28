@@ -197,6 +197,7 @@ public class Controller {
         for(DcMotor motor : motors) if(motor.isBusy()) return true;
         return false;
     }
+    @org.jetbrains.annotations.Contract(pure = true)
     public static boolean timer(double startTime, double currentTime, double timeLimit) {
         if((startTime+timeLimit)<currentTime) return true;
         return false;
