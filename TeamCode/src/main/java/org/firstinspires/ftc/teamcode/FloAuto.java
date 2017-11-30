@@ -76,8 +76,9 @@ public class FloAuto extends LinearOpMode{
 
             int direction = 1;
             if(side.equals("Right")) direction = -1;
-            chasis.toPositon(4000,direction);
+            chasis.toPositon(4000,-direction);
             chasis.toAbsoluteAngle(Math.PI/2);
+            chasis.toPositon(4000/40,-1.0);
             chasis.strafeLeft(direction);
             for (int n=0; n < coulum; n++) {
                 while(chasis.Distance.getDistance(DistanceUnit.CM) > 6);

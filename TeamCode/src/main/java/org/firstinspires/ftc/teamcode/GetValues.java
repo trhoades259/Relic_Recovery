@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
  * Created by dave on 11/11/17.
@@ -14,18 +12,12 @@ public class GetValues extends OpMode {
     Conveyor conveyor = new Conveyor();
     Relic relic = new Relic();
     Chasis chasis = new Chasis();
+    Jewel jewel = new Jewel();
 
-    Toggle drive = new Toggle();
     Toggle beltSpeed = new Toggle();
-    Toggle liftPos = new Toggle();
-    Toggle liftControl = new Toggle();
     Toggle grabber = new Toggle(relic.grabber);
 
-    Gamepad gamepad;
-
-    DcMotor motor;
-
-    boolean liftSet, posHold = false;
+    String[][] drive = {{"frontLeftDrive","frontRightDrive"},{"backLeftDrive","backRightDrive"}};
 
     @Override
     public void init() {
@@ -40,8 +32,19 @@ public class GetValues extends OpMode {
     @Override
     public void loop() {
         chasis.setPower(gamepad1.right_trigger-gamepad1.left_trigger);
+        for(int n=0; n<chasis.drivetrain.length; n++) for(int i=0; i<chasis.drivetrain[n].length; n++) telemetry.addData(drive[n][i],chasis.drivetrain[n][i].getCurrentPosition());
 
-        telemetry.addData();
+        conveyor.lift.setPower(-gamepad1.right_stick_y);
+        telemetry.addData("lift position: ",conveyor.lift.getCurrentPosition());
+
+        if(gamepad1.dpad_up) jewel.arm.setPosition(jewel.arm.getPosition()+0.025);
+        else if(gamepad1.dpad_down) jewel.arm.setPosition(jewel.arm.getPosition()-0.025);
+        telemetry.addData("jew arm", jewel.arm.getPosition());
+
+        if(gamepad1.dpad_right) relic.grabber.setPosition(relic.grabber.getPosition()+0.025);
+        else if(gamepad1.dpad_left) relic.grabber.setPosition(relic.grabber.getPosition()-0.025);
+        telemetry.addData("grabber servo", relic.grabber.getPosition());
+
         telemetry.update();
     }
 }
