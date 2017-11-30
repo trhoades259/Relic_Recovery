@@ -37,24 +37,13 @@ public class FloAuto extends LinearOpMode{
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate");
 
-        telemetry.addData(">", "Press Play to start");
-        telemetry.update();
-
         while (!opModeIsActive()) {
-            if(gamepad1.x || gamepad2.x) {
-                color = "Blue";
-            }
-            if (gamepad1.b || gamepad2.b){
-                color = "Red";
-            }
+            if(gamepad1.x || gamepad2.x) color = "Blue";
+            if (gamepad1.b || gamepad2.b) color = "Red";
             telemetry.addData("Color {X (Blue), B (Red)}", color);
 
-            if(gamepad1.a || gamepad2.a) {
-                side = "Left";
-            }
-            if (gamepad1.y || gamepad2.y){
-                side = "Right";
-            }
+            if(gamepad1.a || gamepad2.a) side = "Left";
+            if (gamepad1.y || gamepad2.y) side = "Right";
             telemetry.addData("Side {A (Left), Y (Right)}", side);
 
             telemetry.update();
@@ -65,7 +54,6 @@ public class FloAuto extends LinearOpMode{
 
         while (opModeIsActive()) {
 
-            jewel.down();
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             int coulum = 2;
             double startTime=runtime.time();
@@ -76,21 +64,21 @@ public class FloAuto extends LinearOpMode{
                     break;
                 }
             }
-            if(side.equals("Right")) coulum=3-coulum;
+            if(side.equals("Right")) coulum=5-coulum;
 
+            jewel.down();
             startTime = runtime.time();
             while(jewel.color.red()<BREAKPOINT && jewel.color.blue()<BREAKPOINT && Controller.timer(startTime,runtime.time(),1.0)) ;
-            if((jewel.color.red()>BREAKPOINT && color.equals("Red"))||(jewel.color.blue()>BREAKPOINT && color.equals("Blue"))) {
-                //robot.turnRight();
-                //robot.turnLeft();
-            }
-            else {
-                //robot.turnLeft();
-              //  robot.turnRight();
-            }
-            //robot.turnRight();
-            //if(side.equals("Right")) robot.strafeLeft();
-            //else robot.strafeRight();
+            if(jewel.match(color))  chasis.toAbsoluteAngle(Math.PI/6);
+            else chasis.toAbsoluteAngle(-Math.PI/6);
+            jewel.up();
+            chasis.toAbsoluteAngle(0.0);
+
+            int direction = 1;
+            if(side.equals("Right")) direction = -1;
+            chasis.toPositon(4000,direction);
+            chasis.toAbsoluteAngle(Math.PI/2);
+            chasis.strafeLeft(direction);
             for (int n=0; n < coulum; n++) {
                 while(chasis.Distance.getDistance(DistanceUnit.CM) > 6);
                 if((n-1)!=coulum) while(chasis.Distance.getDistance(DistanceUnit.CM) < 6);

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
@@ -18,12 +17,9 @@ public class FloTele extends OpMode {
     Toggle drive = new Toggle();
     Toggle beltSpeed = new Toggle();
     Toggle liftPos = new Toggle();
-    Toggle liftControl = new Toggle();
     Toggle grabber = new Toggle(relic.grabber);
 
     Gamepad gamepad;
-
-    DcMotor motor;
 
     boolean liftSet, posHold = false;
 
@@ -46,6 +42,8 @@ public class FloTele extends OpMode {
         chasis.turn(gamepad.right_stick_x);
         chasis.setPower();
 
+        if(gamepad2.a) chasis.level();
+
 
         conveyor.belt.setPower(beltSpeed.toggleValue(gamepad1.x)*(gamepad1.left_trigger-gamepad1.right_trigger));
 
@@ -57,9 +55,11 @@ public class FloTele extends OpMode {
         }
 
 
-        if(liftControl.toggle(gamepad2.a)) motor = relic.horzLift;
-        else motor = relic.vertLift;
-        motor.setPower(gamepad2.left_trigger-gamepad2.right_trigger);
+        relic.horzLift.setPower(gamepad2.right_trigger);
+
+        if(gamepad2.right_bumper) relic.vertLift.setPower(1.0);
+        else if(gamepad2.left_bumper) relic.vertLift.setPower(-1.0);
+        else relic.vertLift.setPower(0.0);
 
         grabber.toggleServo(gamepad2.b);
     }

@@ -121,8 +121,8 @@ public class Chasis {
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=mult;
     }
     public void setAngle(double angle, double mag) {
-        for(int n=0; n<2; n++) powerMatrix[n][n] += Math.sin(Math.toRadians(angle)+Math.PI/4);
-        for(int n=0; n<2; n++) powerMatrix[1-n][n] +=  Math.cos(Math.toRadians(angle)+Math.PI/4);
+        for(int n=0; n<2; n++) powerMatrix[n][n] = Math.sin(Controller.fixAngle(Math.toRadians(angle)+Math.PI/4));
+        for(int n=0; n<2; n++) powerMatrix[1-n][n] =  Math.cos(Controller.fixAngle(Math.toRadians(angle)+Math.PI/4));
         double mult = mag/getMax();
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=mult;
     }
@@ -173,15 +173,38 @@ public class Chasis {
     }
     public void level() {
         Controller level = new Controller("PID");
-        level.setKp(0.25);
-        level.setKi(0.25);
-        level.setKd(0.25);
+        level.setConstants(0.25,0.25,0.25);
         level.setTarget(0.0);
         level.setLimit(1.0);
-        double error = 10.0;
-        while(Math.abs(error)>5.0) {
+        level.init(pitchError());
+        while(Math.abs(level.getError())>5.0) {
             level.update(pitchError());
             setAngle(targetYaw(),level.getOut());
         }
+    }
+    public void toRelativeAngle(double angle) {
+        toAbsoluteAngle(angle+getYaw());
+    }
+    public void toAbsoluteAngle(double angle) {
+        Controller orientation = new Controller("PID");
+        orientation.setConstants(0.25,0.25,0.25);
+        orientation.setTarget(angle);
+        orientation.setLimit(1.0);
+        orientation.init(getYaw());
+        while(Math.abs(orientation.getError())>3.0) {
+            orientation.update(getYaw());
+            setRotation(-orientation.getOut());
+        }
+    }
+    public void toPositon(int position, double power) {
+        DcMotor[] motors = new DcMotor[4];
+        int[] positions = new int[4];
+        double[] powers = new double[4];
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) motors[2*n+i]=drivetrain[n][i];
+        for(int n=0; n<4; n++) {
+            positions[n]=position;
+            powers[n]=power;
+        }
+        Controller.toPosition(motors,positions,powers);
     }
 }

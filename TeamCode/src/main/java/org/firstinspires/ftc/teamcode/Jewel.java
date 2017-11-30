@@ -35,4 +35,7 @@ public class Jewel {
     public void down() {
         arm.setPosition(DOWN);
     }
+    public boolean match(String allience) {
+        return (color.red()>color.blue() && allience.equals("Red"))||(color.blue()>color.red() && allience.equals("Blue"));
+    }
 }

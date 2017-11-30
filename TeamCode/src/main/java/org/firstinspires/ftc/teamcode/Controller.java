@@ -73,6 +73,11 @@ public class Controller {
         Klead=0;
         Klag=0;
     }
+    public void setConstants(double p, double i, double d) {
+        Kp=p;
+        Ki=i;
+        Kd=d;
+    }
     public void setTarget(double t) {
         target=t;
     }
@@ -93,6 +98,10 @@ public class Controller {
     public void updateTime() {
         time=runTime.time()-endTime;
         endTime=time;
+    }
+    public void init(double init) {
+        updateIn(init);
+        updateError();
     }
     public void updateI() {
         double iError=error, sum=error*time;
@@ -143,6 +152,9 @@ public class Controller {
         if(limiter) capOut();
         return out;
     }
+    public double getError() {
+        return error;
+    }
     public void setLimit(double lim) {
         limit=Math.abs(lim);
         limiter=true;
@@ -169,10 +181,10 @@ public class Controller {
         return mag;
     }
     public static double angleDriveLeft(double x, double y) {
-        return Math.sin(getAngle(x,y)-Math.PI/4)*getMagnitude(x,y);
+        return Math.sin(fixAngle(getAngle(x,y)-Math.PI/4))*getMagnitude(x,y);
     }
     public static double angleDriveRight(double x, double y) {
-        return Math.cos(getAngle(x,y)-Math.PI/4)*getMagnitude(x,y);
+        return Math.cos(fixAngle(getAngle(x,y)-Math.PI/4))*getMagnitude(x,y);
     }
     public static void toPosition(DcMotor[] motors, int[] positions, double[] speeds) {
         for(int n=0; n<motors.length; n++) {
@@ -197,9 +209,11 @@ public class Controller {
         for(DcMotor motor : motors) if(motor.isBusy()) return true;
         return false;
     }
-    @org.jetbrains.annotations.Contract(pure = true)
     public static boolean timer(double startTime, double currentTime, double timeLimit) {
-        if((startTime+timeLimit)<currentTime) return true;
-        return false;
+        return (startTime+timeLimit)<currentTime ;
+    }
+    public static double fixAngle(double angle) {
+        while(angle<=(-Math.PI) || angle>Math.PI) angle+=(2*Math.PI*(-Math.signum(angle)));
+        return angle;
     }
 }
