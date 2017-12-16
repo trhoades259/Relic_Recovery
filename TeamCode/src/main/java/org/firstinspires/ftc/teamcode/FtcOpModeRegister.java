@@ -66,13 +66,16 @@ public class FtcOpModeRegister implements OpModeRegister {
         /**
          * Any manual OpMode class registrations should go here.
          */
-        manager.register("Tele1", Tele1.class);
-        manager.register("TeleSense", teleSensor.class);
+        //manager.register("Tele1", Tele1.class);
+        //manager.register("TeleSense", teleSensor.class);
         //manager.register("AutoSensor", AutoSensor.class);
         manager.register("VuforiaTest", VuforiaTest.class);
         manager.register("grabberTeleTest", grabberTeleTest.class);
         manager.register("LiftGlift_Tele", LiftGlift_Tele.class);
+        manager.register("MeetTele", FloTeleMain.class);
         manager.register("FloTele", FloTele.class);
         manager.register("FloAuto", FloAuto.class);
+        manager.register("AngleTest", toAngleTest.class);
+        manager.register("vuforia", columbTest.class);
     }
 }
