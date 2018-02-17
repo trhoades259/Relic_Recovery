@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  * Created by dave on 11/11/17.
  */
 @TeleOp
+@Disabled
 public class FloTele extends OpMode {
 
     Conveyor conveyor = new Conveyor();

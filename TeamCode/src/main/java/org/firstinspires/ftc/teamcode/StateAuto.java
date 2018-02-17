@@ -13,16 +13,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 @Autonomous
 //@Disabled
-public class FloAuto extends LinearOpMode{
+public class StateAuto extends LinearOpMode{
 
     //creating hardware objects
-    Conveyor conveyor = new Conveyor();
-    Jewel jewel = new Jewel();
-    Chasis chasis = new Chasis(true);
+    Chassis chassis = new Chassis(true,true);
+    Particle particle = new Particle();
+    Belt belt = new Belt();
 
     //init input varibles
     private String color = "Red";
     private String side = "Left";
+    private String target = "Center";
 
     //encoder values
     static final int TILE = 560;
@@ -33,12 +34,12 @@ public class FloAuto extends LinearOpMode{
 
     @Override public void runOpMode() {
         //init hardware
-        conveyor.init(hardwareMap);
-        jewel.init(hardwareMap);
-        chasis.init(hardwareMap);
+        chassis.init(hardwareMap);
+        particle.init(hardwareMap);
+        belt.init(hardwareMap);
 
         //vuforia setup
-        VuforiaTrackables relicTrackables = this.chasis.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackables relicTrackables = this.chassis.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate");
 
@@ -46,25 +47,30 @@ public class FloAuto extends LinearOpMode{
         while (!opModeIsActive()) {
             if(gamepad1.x || gamepad2.x) color = "Blue";
             if (gamepad1.b || gamepad2.b) color = "Red";
-            telemetry.addData("Color {X (Blue), B (Red)}", color);
+            telemetry.addData("Color {Blue (X), Red (B)}", color);
 
             if(gamepad1.a || gamepad2.a) side = "Left";
             if (gamepad1.y || gamepad2.y) side = "Right";
-            telemetry.addData("Side {A (Left), Y (Right)}", side);
+            telemetry.addData("Side {Left (A), Right (Y)}", side);
+
+            if(gamepad1.left_stick_button || gamepad2.left_stick_button) side = "Center";
+            if (gamepad1.right_stick_button || gamepad2.right_stick_button) side = "Far";
+            telemetry.addData("Target {Center (Left Stick), Far (Right Stick)}", target);
 
             telemetry.update();
         }
         waitForStart();
 
         //lowers jewel arm
-        jewel.down();
+        particle.setRotation(Particle.OUT);
+        particle.setElevation(Particle.DOWN);
 
         //calculates target coulum using vuforia input
         relicTrackables.activate();
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         int coulum = 1;
         sleep(3000);
-        if (vuMark == RelicRecoveryVuMark.LEFT) coulum=2;
+        if (vuMark == RelicRecoveryVuMark.LEFT) coulum++;
         else if (vuMark == RelicRecoveryVuMark.RIGHT) coulum=-1;
 
         //knocks off appropriate jewel
