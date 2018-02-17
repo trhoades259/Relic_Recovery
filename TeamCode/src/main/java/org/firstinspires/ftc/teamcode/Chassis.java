@@ -173,4 +173,31 @@ public class Chassis {
     public void stop() {
         drivePower(0.0);
     }
+    public void driveToPosition(int position) {
+        warmUp();
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setTargetPosition(position);
+        execute();
+    }
+    public boolean motorsAreBusy() {
+        return (frontLeftDrive.isBusy() && backLeftDrive.isBusy() && frontRightDrive.isBusy() && backRightDrive.isBusy());
+    }
+    public void turnToPosition(int position) {
+        warmUp();
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[i][n].setTargetPosition(position-(2*position*n));
+        execute();
+    }
+    public void warmUp() {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void execute() {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(0.5);
+        while(motorsAreBusy()) ;
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(0.0);
+    }
+    public void strafeToPosition(int position) {
+        warmUp();
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(position*(-2*Math.abs(n-i)+1));
+        execute();
+    }
 }

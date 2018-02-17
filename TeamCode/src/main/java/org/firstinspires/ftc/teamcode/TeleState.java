@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by dave on 11/11/17.
@@ -12,8 +11,6 @@ public class TeleState extends OpMode {
 
     Belt belt = new Belt();
     Chassis chassis = new Chassis(true);
-
-    ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -26,11 +23,11 @@ public class TeleState extends OpMode {
     public void loop() {
 
         //level program
-        double target=0.0, response, Kp=1, I=0, D, Kd=0.1, Ki=.3, error, errorPrev=0, timePrev=timer.time(), timeReal, timeDif, sensor,x,y;
+        double target=0.0, response, Kp=1, I=0, D, Kd=0.1, Ki=.3, error, errorPrev=0, timePrev=getRuntime(), timeReal, timeDif, sensor,x,y;
         while(gamepad1.a) {
             sensor=chassis.pitchError();
             error=target-sensor;
-            timeReal = timer.time();
+            timeReal = getRuntime();
             timeDif = timeReal-timePrev;
             I+=error*(timeDif);
             D=(error-errorPrev)/timeDif;
