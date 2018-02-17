@@ -9,8 +9,11 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
+import static java.lang.Double.isNaN;
 
 /**
  * Created by User on 10/17/2017.
@@ -152,5 +155,22 @@ public class Chassis {
     }
     public double targetYaw() {
         return Math.atan2(Math.cos(getPitch()),Math.cos(getRoll()));
+    }
+    public void drivePower(double power) {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(power);
+    }
+    public void turnPower(double power) {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[i][n].setPower(power-(2*power*n));
+    }
+    public void strafePower(double power) {
+        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(power*(-2*Math.abs(n-i)+1));
+    }
+    public double getDistance() {
+        double d = distance.getDistance(DistanceUnit.CM);
+        if(isNaN(d)) d = 100.0;
+        return d;
+    }
+    public void stop() {
+        drivePower(0.0);
     }
 }

@@ -71,73 +71,72 @@ public class StateAuto extends LinearOpMode{
         int coulum = 1;
         sleep(3000);
         if (vuMark == RelicRecoveryVuMark.LEFT) coulum++;
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) coulum=-1;
+        else if (vuMark == RelicRecoveryVuMark.RIGHT) coulum=-2;
 
         //knocks off appropriate jewel
-        if(jewel.match(color))  {
-            chasis.turnRight(0.2);
-            sleep(500);
-            chasis.stop();
-            jewel.up();
-            sleep(300);
-            chasis.turnLeft(0.2);
-            sleep(500);
-        }
-        else {
-            chasis.turnLeft(0.2);
-            sleep(500);
-            chasis.stop();
-            jewel.up();
-            sleep(300);
-            chasis.turnRight(0.2);
-            sleep(500);
-        }
-        chasis.stop();
-        sleep(200);
+        particle.hit(particle.match(color) ? 1.0 : -1.0);
+        sleep(500);
+        particle.setElevation(Particle.ELEVATORINIT);
+        sleep(500);
+        particle.setRotation(Particle.ROTATIONINIT);
+        sleep(800);
 
         //setup robot infront of center of cryptobox
-        int direction = 1;
-        if(side.equals("Right")) direction = -1;
-        chasis.driveForward(direction/1.5);
-        sleep(1450);
-        chasis.turnLeft(0.4);
-        sleep(1200);
-        chasis.driveForward(0.4);
+        if(target.equals("Center")) {
+            int direction = 1;
+            if (side.equals("Right")) direction = -1;
+            chassis.drivePower(direction / 1.5);
+            sleep(1450);
+            chassis.turnPower(-0.4);
+            sleep(1200);
+        }
+        else {
+            double colorNum = color.equals("Red") ? 1 : -1;
+            chassis.drivePower(colorNum / 1.5);
+            sleep(1450);
+            chassis.strafePower(-0.6);
+            sleep(800);
+            if (colorNum == 1) {
+                chassis.turnPower(0.4);
+                sleep(2400);
+            }
+        }
+        chassis.drivePower(0.4);
         sleep(2200);
-        chasis.driveForward(-0.2);
+        chassis.drivePower(-0.2);
         sleep(200);
 
         //strafes to appropriate coulum according to earlier calculation
         boolean end = false;
         double timer = runtime.time();
-        chasis.strafeLeft(-Math.signum(coulum)/2);
-        for (int n=0; n < Math.abs(coulum); n++) {
-            while (chasis.getDistance() > 20) {
-                if(runtime.time()>(timer+10.0)) {
-                    end=true;
+        chassis.strafePower(Math.signum(coulum) / 2);
+        for (int n = 0; n < Math.abs(coulum); n++) {
+            while (chassis.getDistance() > 20) {
+                if (runtime.time() > (timer + 10.0)) {
+                    end = true;
                     break;
                 }
             }
-            if(end) break;
-            if ((n + 1) != coulum) while (chasis.getDistance() < 20) ;
+            if (end) break;
+            if ((n + 1) != coulum) while (chassis.getDistance() < 20) ;
         }
-        chasis.stop();
+        chassis.stop();
 
         //place glyph in crytobox
-        chasis.driveForward(-0.3);
+        chassis.drivePower(-0.3);
         sleep(250);
-        chasis.stop();
-        conveyor.belt.setPower(1.0);
+        chassis.stop();
+        belt.setPower(1.0);
         sleep(2000);
-        conveyor.stop();
+        belt.stop();
 
         //release/push glyph into coulum
-        chasis.driveForward(-0.4);
+        chassis.drivePower(-0.4);
         sleep(800);
-        chasis.driveForward(0.4);
+        chassis.drivePower(0.4);
         sleep(1000);
-        chasis.driveForward(-0.3);
+        chassis.drivePower(-0.3);
         sleep(250);
-        chasis.stop();
+        chassis.stop();
     }
 }

@@ -20,8 +20,9 @@ public class Particle {
 
     final static double ELEVATORINIT = 0.0;
     final static double ROTATIONINIT = 0.0;
-    public final static double OUT = 0.5;
-    public final static double DOWN = 0.5;
+    public final static double OUT = 0.7;
+    public final static double DOWN = 0.3;
+    public final static double HIT = 0.3;
 
     Particle() {}
 
@@ -49,6 +50,9 @@ public class Particle {
     }
     public void setElevation(double elevate) {
         elevation.setPosition(elevate);
+    }
+    public void hit(double direction) {
+        setRotation(rotation.getPosition()+HIT*direction);
     }
 
     //checks for match between input allience color and read jewel color

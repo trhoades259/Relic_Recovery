@@ -49,9 +49,9 @@ public class Belt {
 
     }
     public void stop() {
-        beltPower(0.0);
+        setPower(0.0);
     }
-    public void beltPower(double power) {
+    public void setPower(double power) {
         bottomLeft.setPower(power);
         bottomRight.setPower(power);
         topLeft.setPower(power);

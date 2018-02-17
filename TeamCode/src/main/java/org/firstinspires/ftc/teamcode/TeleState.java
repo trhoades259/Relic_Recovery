@@ -46,7 +46,7 @@ public class TeleState extends OpMode {
 
         //belt
         if (Math.abs(gamepad2.right_stick_x) > 0.1) belt.turnBlock(gamepad2.right_stick_x);
-        else if (Math.abs(gamepad2.left_stick_y) > 0.1) belt.beltPower(-gamepad2.left_stick_y);
+        else if (Math.abs(gamepad2.left_stick_y) > 0.1) belt.setPower(-gamepad2.left_stick_y);
         else {
             belt.bottomPower(gamepad2.right_trigger);
             belt.topPower(gamepad2.left_trigger);
