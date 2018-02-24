@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Created by dave on 11/11/17.
  */
 @TeleOp
-public class TeleState extends OpMode {
+public class TeleState022318 extends OpMode {
 
     Belt belt = new Belt();
     Chassis chassis = new Chassis(true);
@@ -16,6 +16,8 @@ public class TeleState extends OpMode {
 
     static double[][] powerMatrix = new double[2][2];
     static double[][] angleMatrix = new double[2][2];
+
+    int launchCycle = 3;
 
     @Override
     public void init() {
@@ -26,25 +28,6 @@ public class TeleState extends OpMode {
 
     @Override
     public void loop() {
-
-        //level program
-        /*double target=0.0, response, Kp=1, I=0, D, Kd=0.1, Ki=.3, error, errorPrev=0, timePrev=getRuntime(), timeReal, timeDif, sensor,x,y;
-        while(gamepad1.a) {
-            sensor=chassis.pitchError();
-            error=target-sensor;
-            timeReal = getRuntime();
-            timeDif = timeReal-timePrev;
-            I+=error*(timeDif);
-            D=(error-errorPrev)/timeDif;
-            response=(Kp*error+Ki*I+Kd*D);
-
-            x=Math.cos(chassis.targetYaw())*response;
-            y=Math.sin(chassis.targetYaw())*response;
-            chassis.driveAngle(x,y);
-
-            errorPrev=error;
-            timePrev=timeReal;
-        }*/
 
         //belt
         if (Math.abs(gamepad2.right_stick_x) > 0.1) belt.turnBlock(gamepad2.right_stick_x);
@@ -62,6 +45,23 @@ public class TeleState extends OpMode {
         chassis.backLeftDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[0][1]+turnMagnitude));
         chassis.frontRightDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[1][0]-turnMagnitude));
         chassis.backRightDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[1][1]-turnMagnitude));
+
+        if(gamepad1.a&&launchCycle==0) {
+            launchCycle = 1;
+        } if (!gamepad1.a&&launchCycle==1){
+            launchCycle = 2 ;
+        }
+        if(launchCycle==2){
+            chassis.launcher.setPosition(Chassis.UP);
+        }
+        if (gamepad1.a&&launchCycle==2){
+            launchCycle = 3 ;
+        } if (!gamepad1.a&&launchCycle==3){
+            launchCycle = 0;
+        }
+        if(launchCycle==0){
+            chassis.launcher.setPosition(Chassis.INIT);
+        }
 
     }
     public static void driveAngle(double x, double y) {

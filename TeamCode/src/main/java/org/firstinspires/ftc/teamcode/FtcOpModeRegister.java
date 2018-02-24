@@ -79,5 +79,9 @@ public class FtcOpModeRegister implements OpModeRegister {
         //manager.register("vuforia", columbTest.class);
         manager.register("TeleState", TeleState.class);
         manager.register("TeleStateTest", TeleStateTest.class);
+        manager.register("StateAuto", StateAuto.class);
+        manager.register("EncoderAuto", StateAutoEncoded.class);
+        manager.register("RealTele", TeleState022318.class);
+        manager.register("OneDriver" , TeleStateOneDriver.class);
     }
 }

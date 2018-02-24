@@ -6,8 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 /**
  * Created by dave on 11/11/17.
  */
+
 @TeleOp
-public class TeleState extends OpMode {
+public class TeleStateOneDriver extends OpMode {
 
     Belt belt = new Belt();
     Chassis chassis = new Chassis(true);
@@ -16,6 +17,8 @@ public class TeleState extends OpMode {
 
     static double[][] powerMatrix = new double[2][2];
     static double[][] angleMatrix = new double[2][2];
+
+    int launchCycle = 3;
 
     @Override
     public void init() {
@@ -27,42 +30,42 @@ public class TeleState extends OpMode {
     @Override
     public void loop() {
 
-        //level program
-        /*double target=0.0, response, Kp=1, I=0, D, Kd=0.1, Ki=.3, error, errorPrev=0, timePrev=getRuntime(), timeReal, timeDif, sensor,x,y;
-        while(gamepad1.a) {
-            sensor=chassis.pitchError();
-            error=target-sensor;
-            timeReal = getRuntime();
-            timeDif = timeReal-timePrev;
-            I+=error*(timeDif);
-            D=(error-errorPrev)/timeDif;
-            response=(Kp*error+Ki*I+Kd*D);
-
-            x=Math.cos(chassis.targetYaw())*response;
-            y=Math.sin(chassis.targetYaw())*response;
-            chassis.driveAngle(x,y);
-
-            errorPrev=error;
-            timePrev=timeReal;
-        }*/
-
         //belt
-        if (Math.abs(gamepad2.right_stick_x) > 0.1) belt.turnBlock(gamepad2.right_stick_x);
-        else if (Math.abs(gamepad2.left_stick_y) > 0.1) belt.setPower(-gamepad2.left_stick_y);
+        if (gamepad1.left_bumper) belt.turnBlock(-0.5);
+        else if (gamepad1.right_bumper) belt.turnBlock(0.5);
+        else if (gamepad1.a) belt.setPower(1.0);
+        else if (gamepad1.b) belt.setPower(-1.0);
         else {
-            belt.bottomPower(gamepad2.right_trigger);
-            belt.topPower(gamepad2.left_trigger);
+            belt.bottomPower(gamepad1.right_trigger);
+            belt.topPower(gamepad1.left_trigger);
         }
 
         //chassis
         turnMagnitude = gamepad1.right_stick_x*0.9;
         driveAngle(-gamepad1.left_stick_x, gamepad1.left_stick_y);
         for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i] = (1.0-Math.abs(turnMagnitude))*angleMatrix[n][i];
-        chassis.frontLeftDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[0][0]+turnMagnitude));
-        chassis.backLeftDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[0][1]+turnMagnitude));
-        chassis.frontRightDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[1][0]-turnMagnitude));
-        chassis.backRightDrive.setPower((1-gamepad1.right_trigger)*(powerMatrix[1][1]-turnMagnitude));
+        chassis.frontLeftDrive.setPower(Math.pow(powerMatrix[0][0]+turnMagnitude,3));
+        chassis.backLeftDrive.setPower(Math.pow(powerMatrix[0][1]+turnMagnitude,3));
+        chassis.frontRightDrive.setPower(Math.pow(powerMatrix[1][0]-turnMagnitude,3));
+        chassis.backRightDrive.setPower(Math.pow(powerMatrix[1][1]-turnMagnitude,3));
 
+        if(gamepad1.x&&launchCycle==0) {
+            launchCycle = 1;
+        } if (!gamepad1.x&&launchCycle==1){
+            launchCycle = 2 ;
+        }
+        if(launchCycle==2){
+            chassis.launcher.setPosition(Chassis.UP);
+        }
+        if (gamepad1.x&&launchCycle==2){
+            launchCycle = 3 ;
+        } if (!gamepad1.x&&launchCycle==3){
+            launchCycle = 0;
+        }
+        if(launchCycle==0){
+            chassis.launcher.setPosition(Chassis.INIT);
+        }
+//togglemyass3
     }
     public static void driveAngle(double x, double y) {
         for(int n=0; n<2; n++) angleMatrix[n][n] = angleDriveLeft(x,y);

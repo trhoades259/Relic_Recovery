@@ -25,10 +25,6 @@ public class StateAuto extends LinearOpMode{
     private String side = "Left";
     private String target = "Center";
 
-    //encoder values
-    static final int TILE = 560;
-    static final int TURN_QUARTER = 385;
-
     ElapsedTime runtime = new ElapsedTime();
 
 
@@ -85,31 +81,31 @@ public class StateAuto extends LinearOpMode{
         if(target.equals("Center")) {
             int direction = 1;
             if (side.equals("Right")) direction = -1;
-            chassis.drivePower(direction / 1.5);
+            chassis.driveForward(direction / 1.5);
             sleep(1450);
-            chassis.turnPower(-0.4);
+            chassis.turnLeft(0.4);
             sleep(1200);
         }
         else {
             double colorNum = color.equals("Red") ? 1 : -1;
-            chassis.drivePower(colorNum / 1.5);
+            chassis.driveForward(colorNum / 1.5);
             sleep(1450);
-            chassis.strafePower(-0.6);
+            chassis.strafeLeft(0.6);
             sleep(800);
             if (colorNum == 1) {
-                chassis.turnPower(0.4);
+                chassis.turnRight(0.4);
                 sleep(2400);
             }
         }
-        chassis.drivePower(0.4);
+        chassis.driveForward(0.4);
         sleep(2200);
-        chassis.drivePower(-0.2);
+        chassis.driveBackward(0.2);
         sleep(200);
 
         //strafes to appropriate coulum according to earlier calculation
         boolean end = false;
         double timer = runtime.time();
-        chassis.strafePower(Math.signum(coulum) / 2);
+        chassis.strafeRight(Math.signum(coulum) / 2);
         for (int n = 0; n < Math.abs(coulum); n++) {
             while (chassis.getDistance() > 20) {
                 if (runtime.time() > (timer + 10.0)) {
@@ -123,7 +119,7 @@ public class StateAuto extends LinearOpMode{
         chassis.stop();
 
         //place glyph in crytobox
-        chassis.drivePower(-0.3);
+        chassis.driveBackward(0.3);
         sleep(250);
         chassis.stop();
         belt.setPower(1.0);
@@ -131,11 +127,11 @@ public class StateAuto extends LinearOpMode{
         belt.stop();
 
         //release/push glyph into coulum
-        chassis.drivePower(-0.4);
+        chassis.driveBackward(0.4);
         sleep(800);
-        chassis.drivePower(0.4);
+        chassis.driveForward(0.4);
         sleep(1000);
-        chassis.drivePower(-0.3);
+        chassis.driveBackward(0.3);
         sleep(250);
         chassis.stop();
     }

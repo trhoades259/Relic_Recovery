@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -27,6 +28,8 @@ public class Chassis {
     DcMotor frontRightDrive;
     DcMotor backRightDrive;
 
+    Servo launcher;
+
     static double[][] powerMatrix = {{0,0},{0,0}};
     DcMotor[][] drivetrain = {{frontLeftDrive,frontRightDrive},{backLeftDrive,backRightDrive}};
 
@@ -42,6 +45,9 @@ public class Chassis {
     VuforiaLocalizer vuforia;
 
     DistanceSensor distance;
+
+    final static double INIT = 0.0;
+    final static double UP = 0.4;
 
     //constructors
     Chassis() {};
@@ -81,6 +87,10 @@ public class Chassis {
 
         distance = hwm.get(DistanceSensor.class, "distance");
 
+        launcher = hwm.get(Servo.class, "launcher");
+
+        launcher.setPosition(INIT);
+
         if(gyro) {
             BNO055IMU.Parameters parametersIMU = new BNO055IMU.Parameters();
             parametersIMU.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -98,12 +108,6 @@ public class Chassis {
             this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         }
     }
-    public void driveAngle(double x, double y) {
-        for(int n=0; n<2; n++) powerMatrix[n][n] += angleDriveLeft(x,y);
-        for(int n=0; n<2; n++) powerMatrix[1-n][n] += angleDriveRight(x,y);
-        double mult = getMagnitude(x,y)/getMax();
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=mult;
-    }
     public static double angleDriveLeft(double x, double y) {
         return Math.sin(fixAngle(getAngle(x,y)-Math.PI/4))*getMagnitude(x,y);
     }
@@ -119,30 +123,8 @@ public class Chassis {
         while(angle<=(-Math.PI) || angle>Math.PI) angle+=(2*Math.PI*(-Math.signum(angle)));
         return angle;
     }
-    public static double getMax() {
-        double max=0.0;
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(Math.abs(powerMatrix[n][i])>max) max=Math.abs(powerMatrix[n][i]);
-        return max;
-    }
     public static double getAngle(double x, double y){
         return Math.atan2(-y,x);
-    }
-    public void turn(double power) {
-        power/=2;
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=(1-power);
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[i][n]+=power-(2*power*n);
-    }
-    public void dampen(double power) {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) powerMatrix[n][i]*=(1-power);
-    }
-    public static void capPower() {
-        double[][] capMatrix = {{1.0,1.0},{1.0,1.0}};
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(powerMatrix[n][i]<0) capMatrix[n][i]=(-1.0);
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) if(Math.abs(powerMatrix[n][i])>1) powerMatrix[n][i]=capMatrix[n][i];
-    }
-    public void setPower() {
-        capPower();
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(powerMatrix[n][i]);
     }
     public double pitchError() {
         return Math.atan2(Math.sin(getRoll())+Math.sin(getPitch()),getMagnitude(Math.cos(getPitch()),Math.cos(getRoll())));
@@ -156,48 +138,94 @@ public class Chassis {
     public double targetYaw() {
         return Math.atan2(Math.cos(getPitch()),Math.cos(getRoll()));
     }
-    public void drivePower(double power) {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(power);
-    }
-    public void turnPower(double power) {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[i][n].setPower(power-(2*power*n));
-    }
-    public void strafePower(double power) {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(power*(-2*Math.abs(n-i)+1));
-    }
     public double getDistance() {
         double d = distance.getDistance(DistanceUnit.CM);
         if(isNaN(d)) d = 100.0;
         return d;
     }
     public void stop() {
-        drivePower(0.0);
+        driveForward(0.0);
     }
+    public void driveForward(double power) {
+        frontLeftDrive.setPower(power);
+        backLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        backRightDrive.setPower(power);
+    }
+
+    public void driveBackward(double power) { driveForward(-power);}
+    public void turnLeft(double power) {
+        frontLeftDrive.setPower(-power);
+        backLeftDrive.setPower(-power);
+        frontRightDrive.setPower(power);
+        backRightDrive.setPower(power);
+    }
+    public void turnRight(double power) {
+        turnLeft(-power);
+    }
+    public void strafeLeft(double power) {
+        frontLeftDrive.setPower(power);
+        backLeftDrive.setPower(-power);
+        frontRightDrive.setPower(-power);
+        backRightDrive.setPower(power);
+    }
+    public void strafeRight(double power) { strafeLeft(-power);}
     public void driveToPosition(int position) {
         warmUp();
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setTargetPosition(position);
+        setTargetPosition(position);
         execute();
     }
+    public void setTargetPosition(int position) {
+        frontLeftDrive.setTargetPosition(position);
+        backLeftDrive.setTargetPosition(position);
+        frontRightDrive.setTargetPosition(position);
+        backRightDrive.setTargetPosition(position);
+    }
+    public void setTargetTurn(int position) {
+        frontLeftDrive.setTargetPosition(position);
+        backLeftDrive.setTargetPosition(position);
+        frontRightDrive.setTargetPosition(-position);
+        backRightDrive.setTargetPosition(-position);
+    }
+    public void setTargetStrafe(int position) {
+        frontLeftDrive.setTargetPosition(-position);
+        backLeftDrive.setTargetPosition(position);
+        frontRightDrive.setTargetPosition(position);
+        backRightDrive.setTargetPosition(-position);
+    }
     public boolean motorsAreBusy() {
-        return (frontLeftDrive.isBusy() && backLeftDrive.isBusy() && frontRightDrive.isBusy() && backRightDrive.isBusy());
+        return (frontLeftDrive.isBusy() || backLeftDrive.isBusy() || frontRightDrive.isBusy() || backRightDrive.isBusy());
     }
     public void turnToPosition(int position) {
         warmUp();
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[i][n].setTargetPosition(position-(2*position*n));
+        setTargetTurn(position);
         execute();
     }
     public void warmUp() {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        stopAndReset();
+        runToPosition();
+    }
+    public void stopAndReset() {
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    public void runToPosition() {
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void execute() {
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(0.5);
+        driveForward(0.5);
         while(motorsAreBusy()) ;
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(0.0);
+        stop();
     }
     public void strafeToPosition(int position) {
         warmUp();
-        for(int n=0; n<2; n++) for(int i=0; i<2; i++) drivetrain[n][i].setPower(position*(-2*Math.abs(n-i)+1));
+        setTargetStrafe(position);
         execute();
     }
+
 }

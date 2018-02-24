@@ -95,7 +95,7 @@ public class StateAutoEncoded extends LinearOpMode{
         chassis.driveToPosition(TILE);
 
         //strafes to appropriate coulum according to earlier calculation
-        chassis.strafePower(-0.4);
+        chassis.strafeLeft(0.4);
         while (chassis.getDistance() > 20) ;
         chassis.stop();
         chassis.strafeToPosition(coulum*STRAFETILE/3);
